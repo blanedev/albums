@@ -1,4 +1,5 @@
 import 'package:album/enum/view_state.dart';
+import 'package:album/model/album/album.dart';
 import 'package:album/repository/albums_repository.dart';
 
 import 'base_vm.dart';
@@ -10,11 +11,11 @@ class AlbumListVM extends BaseVM {
     _repository = repository;
   }
 
-  late dynamic albums;
+  Artist? artist;
 
   Future fetchAllAlbums() async {
     setState(ViewState.busy);
-    albums = await _repository.fetchAllAlbums();    
+    artist = await _repository.fetchAllAlbums();
     setState(ViewState.idle);
   }
 }
