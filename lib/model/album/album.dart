@@ -94,6 +94,7 @@ class Album {
 }
 
 class Artist {
+  
   Artist(
       {this.wrapperType,
       this.artistType,

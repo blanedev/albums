@@ -4,7 +4,6 @@ import 'package:album/theme/color.dart';
 import 'package:album/view-model/album_list_vm.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/entypo_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
       builder: (BuildContext context, AlbumListVM vm, Widget? child) {
         return Scaffold(
             backgroundColor: black,
-            appBar: getAppBar(),
+            appBar: getAppBar(vm),
             body: vm.state == ViewState.busy
                 ? const Center(
                     child: CircularProgressIndicator(),
@@ -49,7 +48,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  AppBar getAppBar() {
+  AppBar getAppBar(AlbumListVM vm) {
     return AppBar(
       backgroundColor: black,
       elevation: 0,
@@ -59,12 +58,13 @@ class _HomeViewState extends State<HomeView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // ignore: prefer_const_literals_to_create_immutables
           children: [
-            const Text(
-              "Explore",
-              style: TextStyle(
+            Text(
+              vm.getNumberOfFavoriteAlbums() == 0
+                  ? "You have not liked any album"
+                  : "Favorited albums: ${vm.getNumberOfFavoriteAlbums()}",
+              style: const TextStyle(
                   fontSize: 20, color: white, fontWeight: FontWeight.bold),
             ),
-            const Icon(Entypo.list)
           ],
         ),
       ),
@@ -322,9 +322,25 @@ class _HomeViewState extends State<HomeView> {
                                     width: 40,
                                     height: 30,
                                     child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Icons.favorite_border_outlined,
+                                      onPressed: () {
+                                        if (vm.checkFavoriteAlbum(
+                                            vm.artist!.lstAlbum![index])) {
+                                          setState(() {
+                                            vm.removeFavoriteAlbum(
+                                                vm.artist!.lstAlbum![index]);
+                                          });
+                                        } else {
+                                          setState(() {
+                                            vm.addFavoriteAlbum(
+                                                vm.artist!.lstAlbum![index]);
+                                          });
+                                        }
+                                      },
+                                      icon: Icon(
+                                        vm.checkFavoriteAlbum(
+                                                vm.artist!.lstAlbum![index])
+                                            ? Icons.favorite_sharp
+                                            : Icons.favorite_border_outlined,
                                         color: Colors.red,
                                         size: 17,
                                       ),
